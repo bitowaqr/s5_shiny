@@ -59,6 +59,10 @@ t1 = Sys.time()
   
 ## Draw parameters outside of loop and store as a list (of lists).
   # # ORIGNIAL RESULTS:
+  if(is.null(set_int_costs_yearly)){
+    set_int_costs_yearly = 5000
+  }
+  
   psa.input <- replicate(n=PSA_length,expr = draw_params(int_costs_yearly = set_int_costs_yearly),simplify = F)                     
   
 ## RUN PSA LOOP 
@@ -80,8 +84,10 @@ t1 = Sys.time()
     ### INNER MARKOV LOOP
       for(i in 1:cycle_length){
         # adjust transisiton probs for age-dependent death risk
-        step_matrix_b = death_age_fmat(mat=mat_b,x=start_age+aging)
-        step_matrix_int = death_age_fmat(mat=mat_int,x=start_age+aging)
+        step_matrix_b = death_age_fmat(mat=mat_b,x=start_age+aging,age=m$death_prob$age,
+                                       value = m$death_prob$value)
+        step_matrix_int = death_age_fmat(mat=mat_int,x=start_age+aging,age=m$death_prob$age,
+                                         value = m$death_prob$value)
         # Move one step in the markov chain
         markov_trace_base[i+1,]= markov_trace_base[i,] %*% step_matrix_b
         markov_trace_int[i+1,]= markov_trace_int[i,] %*% step_matrix_int
@@ -181,3 +187,4 @@ t1 = Sys.time()
     
     return(res)
 }
+

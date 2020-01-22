@@ -228,7 +228,9 @@ draw_params = function(death_prob=NULL,
 
 # adjust transition mat for age-death rate
 death_age_fmat = function(mat,x = 16,age = m$death_prob$age,value = m$death_prob$value){
+  
   d_rate = value[age==x]
+  
   mat = apply(t(mat),1,function(x) x * (1-d_rate))
   mat = cbind(mat,d_rate)
   mat = rbind(mat,c(0,0,0,0,1))
